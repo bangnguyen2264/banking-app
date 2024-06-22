@@ -1,9 +1,11 @@
 import 'package:bankingapp/layouts/authen_layout.dart';
 import 'package:bankingapp/pages/sign_in_screen.dart';
 import 'package:bankingapp/pages/sign_up_screen.dart';
+import 'package:bankingapp/services/auth_service.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
+import 'package:bankingapp/widgets/button.dart';
 import 'package:bankingapp/widgets/form_authen_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool confirmTerm = false;
   @override
@@ -41,7 +43,33 @@ class _SignupScreenState extends State<SignupScreen> {
           _buildLogo(),
           _buildForm(),
           _buildConfirmTerm(),
-          _buildButton(),
+          CustomButton(
+            title: 'Sign Up',
+            onPressed: () async {
+              print('Sign Up button pressed');
+              final body = {
+                'fullName': nameController.text,
+                'email': emailController.text,
+                'password': passwordController.text,
+              };
+              bool isSuccess = await AuthService().handleSignUp(body).timeout(
+                Duration(seconds: 30),
+                onTimeout: () {
+                  print('Sign Up Timeout');
+                  return false;
+                },
+              );
+              if (isSuccess) {
+                print('Sign Up Success');
+                Get.to(
+                  () => SigninScreen(),
+                  transition: Transition.rightToLeft,
+                );
+              } else {
+                print('Sign Up Failed');
+              }
+            },
+          ),
           _buildTextNavigation(),
         ],
       ),
@@ -88,13 +116,12 @@ class _SignupScreenState extends State<SignupScreen> {
       children: [
         FormAuthen(
           controller: nameController,
-          labelText: 'Name',
+          labelText: 'Full Name',
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(
-          controller: phoneController,
-          labelText: 'Phone number',
-          isPhone: true,
+          controller: emailController,
+          labelText: 'Email',
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(
@@ -140,32 +167,6 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildButton() {
-    return GestureDetector(
-      onTap: () {
-        print('Sign Up');
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-          top: 0.025 * Constants.deviceHeight,
-          bottom: 0.02 * Constants.deviceHeight,
-        ),
-        width: double.infinity,
-        height: 0.05 * Constants.deviceHeight,
-        decoration: BoxDecoration(
-          gradient: AppColor.bgColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            'Sign up',
-            style: AppStyles.button.copyWith(color: Colors.white),
-          ),
-        ),
       ),
     );
   }
