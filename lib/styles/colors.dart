@@ -16,7 +16,7 @@ class AppColor {
   static const neutral_5 = Color(0xFFEBEDF6);
   static const bgColor = LinearGradient(
     colors: [accentColor_1, accentColor_2, accentColor_3],
-    stops: [0, 0.26, 0.65], // 0.26, 0.65
+    stops: [0, 0.26, 0.65], // 0.26, 0.65 
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );

@@ -4,6 +4,7 @@ import 'package:bankingapp/utils/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class AuthenLayout extends StatefulWidget {
   final String title;
@@ -61,8 +62,8 @@ class _AuthenLayoutState extends State<AuthenLayout> {
   Widget _buildHeader() {
     return Container(
       margin: EdgeInsets.only(
-        top: 0.08 * Constants.deviceHeight,
-        left: 0.12 * Constants.deviceWidth,
+        top: 0.05 * Constants.deviceHeight,
+        left: 0.08 * Constants.deviceWidth,
         bottom: 0.013 * Constants.deviceWidth,
       ),
       child: Row(
@@ -70,7 +71,7 @@ class _AuthenLayoutState extends State<AuthenLayout> {
           IconButton(
             icon: Icon(Icons.arrow_back_ios_new_sharp, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           Text(
@@ -86,7 +87,7 @@ class _AuthenLayoutState extends State<AuthenLayout> {
     return SvgPicture.asset(
       'assets/components/footer.svg',
       height: 0.12 * Constants.deviceHeight,
-      width: double.infinity,
+      width: Constants.deviceWidth,
       fit: BoxFit.cover,
     );
   }

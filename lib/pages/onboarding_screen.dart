@@ -38,12 +38,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildFooter() {
     return Container(
       height: 0.12 * Constants.deviceHeight,
-      width: double.infinity,
+      width: Constants.deviceWidth,
       child: Stack(
         children: [
           SvgPicture.asset(
             'assets/components/footer.svg',
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
           Align(
             alignment: Alignment.centerRight,
