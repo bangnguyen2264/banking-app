@@ -1,3 +1,4 @@
+import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
 import 'package:bankingapp/pages/sign_in_screen.dart';
 import 'package:bankingapp/pages/sign_up_screen.dart';
@@ -25,6 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool confirmTerm = false;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return AuthenLayout(title: 'Sign up', mainContent: _buildMainContent());
@@ -35,42 +37,56 @@ class _SignupScreenState extends State<SignupScreen> {
       padding: EdgeInsets.symmetric(
         horizontal: 0.12 * Constants.deviceWidth,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          _buildWelcomeText(),
-          _buildLogo(),
-          _buildForm(),
-          _buildConfirmTerm(),
-          CustomButton(
-            title: 'Sign Up',
-            onPressed: () async {
-              print('Sign Up button pressed');
-              final body = {
-                'fullName': nameController.text,
-                'email': emailController.text,
-                'password': passwordController.text,
-              };
-              bool isSuccess = await AuthService().handleSignUp(body).timeout(
-                Duration(seconds: 30),
-                onTimeout: () {
-                  print('Sign Up Timeout');
-                  return false;
+          // if (isLoading) LoadingDialog(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWelcomeText(),
+              _buildLogo(),
+              _buildForm(),
+              _buildConfirmTerm(),
+              CustomButton(
+                title: 'Sign Up',
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  showLoaderDialog(context);
+                  print('Sign Up button pressed');
+                  final body = {
+                    'fullName': nameController.text,
+                    'email': emailController.text,
+                    'password': passwordController.text,
+                  };
+                  bool isSuccess =
+                      await AuthService().handleSignUp(body).timeout(
+                    Duration(seconds: 30),
+                    onTimeout: () {
+                      print('Sign Up Timeout');
+                      return false;
+                    },
+                  );
+                  setState(() {
+                    isLoading = false;
+                  });
+                  Navigator.of(context).pop();
+                  if (isSuccess) {
+                    print('Sign Up Success');
+                    Get.to(
+                      () => SigninScreen(),
+                      transition: Transition.rightToLeft,
+                    );
+                  } else {
+                    print('Sign Up Failed');
+                  }
                 },
-              );
-              if (isSuccess) {
-                print('Sign Up Success');
-                Get.to(
-                  () => SigninScreen(),
-                  transition: Transition.rightToLeft,
-                );
-              } else {
-                print('Sign Up Failed');
-              }
-            },
+              ),
+              _buildTextNavigation(),
+            ],
           ),
-          _buildTextNavigation(),
         ],
       ),
     );

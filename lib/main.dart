@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Constants.initialize(context);
-    
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: OnboardingScreen(),

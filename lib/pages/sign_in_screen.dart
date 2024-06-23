@@ -1,8 +1,10 @@
 import 'package:bankingapp/layouts/authen_layout.dart';
 import 'package:bankingapp/pages/sign_up_screen.dart';
+import 'package:bankingapp/services/auth_service.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
+import 'package:bankingapp/widgets/button.dart';
 import 'package:bankingapp/widgets/form_authen_input.dart';
 import 'package:bankingapp/widgets/nav_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +21,7 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,33 @@ class _SigninScreenState extends State<SigninScreen> {
           _buildLogo(),
           _buildForm(),
           _buildForgotPassword(),
-          _buildButton(),
+          CustomButton(
+            title: 'Sign in',
+            onPressed: () async {
+              print('Sign In button pressed');
+              final body = {
+                'email': emailController.text,
+                'password': passwordController.text,
+              };
+
+              bool isSuccess = await AuthService().handleSignIn(body).timeout(
+                Duration(seconds: 30),
+                onTimeout: () {
+                  print('Sign In Timeout');
+                  return false;
+                },
+              );
+              if (isSuccess) {
+                print('Sign In Success');
+                Get.to(
+                  () => SigninScreen(),
+                  transition: Transition.rightToLeft,
+                );
+              } else {
+                print('Sign In Failed');
+              }
+            },
+          ),
           _buildTextNavigation(),
         ],
       ),
@@ -85,8 +113,8 @@ class _SigninScreenState extends State<SigninScreen> {
     return Column(
       children: [
         FormAuthen(
-          controller: phoneController,
-          labelText: 'Phone number',
+          controller: emailController,
+          labelText: 'Email',
           isPhone: true,
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
@@ -116,33 +144,6 @@ class _SigninScreenState extends State<SigninScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton() {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => NavBar(), transition: Transition.fadeIn);
-        print('Sign in');
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-          top: 0.04 * Constants.deviceHeight,
-          bottom: 0.02 * Constants.deviceHeight,
-        ),
-        width: double.infinity,
-        height: 0.05 * Constants.deviceHeight,
-        decoration: BoxDecoration(
-          gradient: AppColor.bgColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            'Sign in',
-            style: AppStyles.button.copyWith(color: Colors.white),
-          ),
         ),
       ),
     );

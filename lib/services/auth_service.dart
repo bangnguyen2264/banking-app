@@ -29,7 +29,7 @@ class AuthService {
     }
   }
 
-  Future<bool> signIn(Map<String, dynamic> body) async {
+  Future<bool> handleSignIn(Map<String, dynamic> body) async {
     try {
       final response = await http.post(
         Uri.parse('$apiUrl/auth/login'),
