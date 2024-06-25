@@ -5,6 +5,7 @@ import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/widgets/button.dart';
+import 'package:bankingapp/widgets/cofirm_alert.dart';
 import 'package:bankingapp/widgets/form_transfer_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,17 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
               CustomButton(
                   title: 'Send',
                   onPressed: () {
-                    Get.to(() => TransferSuccessScreen());
+                    showConfirmDialog(
+                      context,
+                      'Do you want to confirm this transaction?',
+                      'Transfer',
+                      () {
+                        Get.to(
+                          () => TransferSuccessScreen(),
+                        );
+                      },
+                      false,
+                    );
                   }),
             ],
           ),

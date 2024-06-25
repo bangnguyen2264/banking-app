@@ -1,3 +1,4 @@
+import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
 import 'package:bankingapp/pages/sign_in_screen.dart';
@@ -80,6 +81,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       transition: Transition.rightToLeft,
                     );
                   } else {
+                    showErrorDialog(context, 'Sign Up Failed');
                     print('Sign Up Failed');
                   }
                 },

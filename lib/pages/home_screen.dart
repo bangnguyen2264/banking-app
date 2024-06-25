@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bankingapp/pages/account_screen.dart';
+import 'package:bankingapp/pages/transfer_history_screen.dart';
 import 'package:bankingapp/pages/transfer_screen.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
+import 'package:bankingapp/utils/mock_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -143,6 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: 'assets/components/trans_history.svg',
             title: 'Transaction history',
             onTap: () {
+              Get.to(() => TransferHistoryScreen(),
+                  transition: Transition.fadeIn);
               print('Transaction history');
             },
           ),

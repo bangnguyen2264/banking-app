@@ -8,11 +8,11 @@ import 'package:get/get_core/src/get_main.dart';
 
 class CustomAppbar extends StatelessWidget {
   final String title;
-  final bool centerTitle;
+  final bool hideIconLeading;
   const CustomAppbar({
     super.key,
     required this.title,
-    this.centerTitle = false,
+    this.hideIconLeading = false,
   });
 
   @override
@@ -25,12 +25,14 @@ class CustomAppbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Get.back();
-            },
-          ),
+          hideIconLeading
+              ? Container()
+              : IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
           Text(
             title,
             style: AppStyles.heading2,

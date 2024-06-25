@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
+    final apiUrl = dotenv.env['API_URL'] ?? 'API_URL not found';
+
   Future<Map<String, dynamic>?> get(String path) async {
-    final token = getSavedToken();
+    final token = getAccessToken();
 
     try {
       final response = await http.get(
-        Uri.parse('$path'),
+        Uri.parse('${apiUrl}/${path}'),
         headers: {
           'Content-Type': 'application/json',
           'Accept-Charset': 'utf-8',
@@ -19,8 +21,6 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         print('Response: ${utf8.decode(response.bodyBytes)}');
-
-        ;
         return jsonDecode(utf8.decode(response.bodyBytes));
       } else {
         print('Failed to load data ${response.body}');
@@ -32,7 +32,7 @@ class ApiService {
   }
 
   Future<List<Map<String, dynamic>>?> getList(String path) async {
-    final token = await getSavedToken(); // Await token retrieval
+    final token = await getAccessToken(); // Await token retrieval
 
     try {
       final response = await http.get(
@@ -58,7 +58,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> post(
       String path, Map<String, dynamic> body) async {
-    final token = await getSavedToken(); // Await token retrieval
+    final token = await getAccessToken(); // Await token retrieval
 
     try {
       final response = await http.post(
@@ -81,7 +81,7 @@ class ApiService {
   }
 
   Future<bool> put(String path, Map<String, dynamic> body) async {
-    final token = await getSavedToken(); // Await token retrieval
+    final token = await getAccessToken(); // Await token retrieval
 
     try {
       final response = await http.put(
@@ -104,7 +104,7 @@ class ApiService {
   }
 
   Future<bool> delete(String path) async {
-    final token = await getSavedToken(); // Await token retrieval
+    final token = await getAccessToken(); // Await token retrieval
 
     try {
       final response = await http.delete(
@@ -125,7 +125,7 @@ class ApiService {
     }
   }
 
-  Future<String?> getSavedToken() async {
+  Future<String?> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('accessToken');
   }

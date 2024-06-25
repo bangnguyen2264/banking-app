@@ -111,7 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             Center(
               child: SvgPicture.asset(
-                'assets/components/card.svg',
+                'assets/components/onboarding_logo.svg',
                 width: 0.87 * Constants.deviceWidth,
                 height: 0.38 * Constants.deviceHeight,
                 fit: BoxFit.cover,

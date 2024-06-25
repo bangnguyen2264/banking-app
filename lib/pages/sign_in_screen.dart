@@ -1,3 +1,5 @@
+import 'package:bankingapp/components/error_alert.dart';
+import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
 import 'package:bankingapp/pages/sign_up_screen.dart';
 import 'package:bankingapp/services/auth_service.dart';
@@ -23,6 +25,7 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return AuthenLayout(title: 'Sign in', mainContent: _buildMainContent());
@@ -45,6 +48,10 @@ class _SigninScreenState extends State<SigninScreen> {
             title: 'Sign in',
             onPressed: () async {
               print('Sign In button pressed');
+              setState(() {
+                isLoading = true;
+              });
+              showLoaderDialog(context);
               final body = {
                 'email': emailController.text,
                 'password': passwordController.text,
@@ -57,13 +64,19 @@ class _SigninScreenState extends State<SigninScreen> {
                   return false;
                 },
               );
+              setState(() {
+                isLoading = false;
+              });
+              Navigator.of(context).pop();
+
               if (isSuccess) {
                 print('Sign In Success');
                 Get.to(
-                  () => SigninScreen(),
+                  () => NavBar(),
                   transition: Transition.rightToLeft,
                 );
               } else {
+                showErrorDialog(context, 'Sign In Failed');
                 print('Sign In Failed');
               }
             },
@@ -115,7 +128,6 @@ class _SigninScreenState extends State<SigninScreen> {
         FormAuthen(
           controller: emailController,
           labelText: 'Email',
-          isPhone: true,
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(

@@ -18,6 +18,7 @@ class LoadingDialog extends StatelessWidget {
   }
 }
 
+
 void showLoaderDialog(BuildContext context) {
   showDialog(
     context: context,
