@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/account_screen.dart';
 import 'package:bankingapp/pages/transfer_history_screen.dart';
 import 'package:bankingapp/pages/transfer_screen.dart';
+import 'package:bankingapp/services/user_service.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
@@ -26,28 +28,46 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 0.09 * Constants.deviceWidth,
-        ).copyWith(top: 0.1 * Constants.deviceHeight),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildGoodmorning(),
-            _buildAccountCard(),
-            _buildGridMenu(),
-          ],
-        ),
+      body: FutureBuilder(
+        future: UserService().getMe(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColor.primaryColor_1,
+              ),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+          final user = snapshot.data;
+          return Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 0.09 * Constants.deviceWidth,
+            ).copyWith(top: 0.1 * Constants.deviceHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildGoodmorning(user?.fullName),
+                _buildAccountCard(user!),
+                _buildGridMenu(user),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildGoodmorning() {
+  Widget _buildGoodmorning(String? name) {
     return Container(
       width: 0.7 * Constants.deviceWidth,
       child: Text(
-        'Good Morning, George!',
+        'Good Morning, $name!',
         style: TextStyle(
           fontSize: 32,
           fontFamily: GoogleFonts.poppins().fontFamily,
@@ -57,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAccountCard() {
+  Widget _buildAccountCard(User user) {
     return Center(
       child: Stack(
         children: [
@@ -81,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   width: 0.35 * Constants.deviceWidth,
                   child: AutoSizeText(
-                    'GEORGE FLOYD',
+                    user.fullName,
                     style: AppStyles.heading1.copyWith(
                       color: Colors.white,
                     ),
@@ -92,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   width: 0.35 * Constants.deviceWidth,
                   child: AutoSizeText(
-                    hideNumberAccount('12345678912356'),
+                    hideNumberAccount(user.accountNumber[0].accountNumber),
                     style: AppStyles.paragraphLarge.copyWith(
                       color: Colors.white,
                     ),
@@ -102,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   width: 0.35 * Constants.deviceWidth,
                   child: AutoSizeText(
-                    formatMoney(1000000),
+                    formatMoney(user.accountNumber[0].balance),
                     style: AppStyles.paragraphLargeBold.copyWith(
                       color: Colors.white,
                     ),
@@ -117,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGridMenu() {
+  Widget _buildGridMenu(User user) {
     return Container(
       margin: EdgeInsets.only(top: 0.01 * Constants.deviceHeight),
       width: Constants.deviceWidth,
@@ -129,7 +149,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: 'assets/components/account_card.svg',
             title: 'Account \nand Card',
             onTap: () {
-              Get.to(() => AccountScreen(), transition: Transition.fadeIn);
+              Get.to(
+                  () => AccountScreen(
+                        user: user,
+                      ),
+                  transition: Transition.fadeIn);
               print('Account and Card');
             },
           ),

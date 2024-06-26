@@ -22,14 +22,17 @@ class User {
         fullName = json['fullName'] ?? '',
         email = json['email'] ?? '',
         phoneNumber = json['phoneNumber'] ?? '',
-        accountNumber = json['accountNumber'] ?? '',
+        accountNumber = (json['accountNumber'] as List<dynamic>)
+            .map((account) => Account.fromJson(account))
+            .toList(),
         address = json['address'] ?? '';
 
   Map<String, dynamic> toJson() => {
         'fullName': fullName,
         'email': email,
         'phoneNumber': phoneNumber,
-        'accountNumber': accountNumber,
+        'accountNumber':
+            accountNumber.map((account) => account.toJson()).toList(),
         'address': address,
       };
 }

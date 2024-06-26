@@ -45,6 +45,7 @@ class AuthService {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('accessToken', accessToken);
         prefs.setString('refreshToken', refreshToken);
+        
         return true;
       } else {
         print('Failed to load data ${response.body}');

@@ -14,8 +14,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatefulWidget {
+  final User user;
   const AccountScreen({
     super.key,
+    required this.user,
   });
 
   @override
@@ -23,7 +25,6 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  User user = mockUser;
   bool isHide = true;
   bool editMode = false;
   TextEditingController fullNameController = TextEditingController();
@@ -32,10 +33,10 @@ class _AccountScreenState extends State<AccountScreen> {
   TextEditingController addressController = TextEditingController();
   @override
   void initState() {
-    fullNameController.text = user.fullName;
-    phoneNumberController.text = user.phoneNumber;
-    emailController.text = user.email;
-    addressController.text = user.address;
+    fullNameController.text = widget.user.fullName;
+    phoneNumberController.text = widget.user.phoneNumber;
+    emailController.text = widget.user.email;
+    addressController.text = widget.user.address;
     super.initState();
   }
 
@@ -58,7 +59,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   title: 'Card',
                   onPressed: () {
                     Get.to(() => CardScreen(
-                          user: user,
+                          user: widget.user,
                         ));
                   },
                 ),
@@ -183,18 +184,18 @@ class _AccountScreenState extends State<AccountScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 0.02 * Constants.deviceHeight),
-          _buildFieldInfor('Name', user.fullName),
+          _buildFieldInfor('Name', widget.user.fullName),
           _buildFieldInfor(
             'Phone Number',
-            user.phoneNumber,
+            widget.user.phoneNumber,
           ),
           _buildFieldInfor(
             'Email',
-            user.email,
+            widget.user.email,
           ),
           _buildFieldInfor(
             'Address',
-            user.address,
+            widget.user.address,
           ),
         ],
       ),

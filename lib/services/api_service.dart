@@ -5,23 +5,20 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-    final apiUrl = dotenv.env['API_URL'] ?? 'API_URL not found';
+  final apiUrl = dotenv.env['API_URL'] ?? 'API_URL not found';
 
   Future<Map<String, dynamic>?> get(String path) async {
-    final token = getAccessToken();
-
+    final token = await getAccessToken();
     try {
       final response = await http.get(
-        Uri.parse('${apiUrl}/${path}'),
+        Uri.parse('${apiUrl}${path}'),
         headers: {
           'Content-Type': 'application/json',
-          'Accept-Charset': 'utf-8',
           'Authorization': '$token',
         },
       );
       if (response.statusCode == 200) {
-        print('Response: ${utf8.decode(response.bodyBytes)}');
-        return jsonDecode(utf8.decode(response.bodyBytes));
+        return jsonDecode(response.body);
       } else {
         print('Failed to load data ${response.body}');
         return null;
@@ -31,30 +28,37 @@ class ApiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>?> getList(String path) async {
-    final token = await getAccessToken(); // Await token retrieval
+Future<List<Map<String, dynamic>>?> getList(String path) async {
+    final token = await getAccessToken();
 
     try {
       final response = await http.get(
-        Uri.parse('$path'),
+        Uri.parse('${apiUrl}${path}'), // Replace with your API base URL
         headers: {
           'Content-Type': 'application/json',
           'Authorization': '$token',
         },
       );
+
       if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData =
-            jsonDecode(utf8.decode(response.bodyBytes));
-        print('Content  ${jsonData['content']}');
-        return (jsonData['content']).cast<Map<String, dynamic>>();
+        // Decode the JSON response body
+        List<dynamic> jsonData = jsonDecode(response.body);
+
+        // Convert List<dynamic> to List<Map<String, dynamic>>
+        List<Map<String, dynamic>> dataList = jsonData.cast<Map<String, dynamic>>();
+
+        return dataList;
       } else {
-        print('Failed to load data ${response.body}');
-        return null;
+        // Handle failed request
+        print('Failed to load data: ${response.body}');
+        return null; // Return null when request fails
       }
     } catch (e) {
+      // Handle exceptions
       throw Exception('Exception in ApiService.getList: $e');
     }
   }
+
 
   Future<Map<String, dynamic>> post(
       String path, Map<String, dynamic> body) async {
