@@ -3,6 +3,7 @@ import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class FormInputValue extends StatelessWidget {
   final String title;
@@ -30,7 +31,8 @@ class FormInputValue extends StatelessWidget {
             height: 0.01 * Constants.deviceHeight,
           ),
           Container(
-            padding: EdgeInsets.all(0.02 * Constants.deviceWidth),
+            padding:
+                EdgeInsets.symmetric(horizontal: 0.02 * Constants.deviceWidth),
             width: 0.8 * Constants.deviceWidth,
             height: 0.05 * Constants.deviceHeight,
             alignment: Alignment.centerLeft,
@@ -38,27 +40,31 @@ class FormInputValue extends StatelessWidget {
               color: AppColor.neutral_5,
               borderRadius: BorderRadius.circular(5),
             ),
-            child: TextField(
-                controller: controller,
-                keyboardType:
-                    isNumber ? TextInputType.number : TextInputType.text,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  suffixIcon: controller.text.isEmpty
-                      ? null
-                      : IconButton(
-                          icon: Icon(
-                            Icons.clear_rounded,
-                            color: AppColor.neutral_3,
-                          ),
-                          onPressed: () {
-                            controller.clear();
-                          },
-                        ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 0.75 * Constants.deviceWidth,
                 ),
-                inputFormatters:
-                    isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
-                style: AppStyles.paragraphMedium),
+                child: TextField(
+                  maxLines: 1,
+                  controller: controller,
+                  keyboardType:
+                      isNumber ? TextInputType.number : TextInputType.text,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  inputFormatters: isNumber
+                      ? <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ]
+                      : null,
+                  style: AppStyles.paragraphSmallBold,
+                ),
+              ),
+            ),
           ),
         ],
       ),

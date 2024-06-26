@@ -1,3 +1,8 @@
+import 'package:bankingapp/components/error_alert.dart';
+import 'package:bankingapp/models/accounts.dart';
+import 'package:bankingapp/models/user.dart';
+import 'package:bankingapp/services/account_service.dart';
+import 'package:bankingapp/services/user_service.dart';
 import 'package:bankingapp/widgets/appbar_custom.dart';
 import 'package:bankingapp/pages/transfer_confirm_screen.dart';
 import 'package:bankingapp/styles/colors.dart';
@@ -6,17 +11,13 @@ import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/widgets/button.dart';
 import 'package:bankingapp/widgets/form_transfer_input.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:intl/intl.dart';
 
 class TransferScreen extends StatefulWidget {
-  const TransferScreen({super.key});
+  final User? fromAccount;
+  const TransferScreen({super.key, required this.fromAccount});
 
   @override
   State<TransferScreen> createState() => _TransferScreenState();
@@ -27,6 +28,25 @@ class _TransferScreenState extends State<TransferScreen> {
       TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController discriptionController = TextEditingController();
+  late User? recipient;
+  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.fromAccount != null) {
+      discriptionController.text =
+          '${widget.fromAccount!.fullName} transferred the money to you.';
+    }
+  }
+
+  @override
+  void dispose() {
+    accountReceivingController.dispose();
+    amountController.dispose();
+    discriptionController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +62,8 @@ class _TransferScreenState extends State<TransferScreen> {
             children: [
               CustomAppbar(title: 'Transfer'),
               _buildImage(),
-              _buildFormDefaultValue('Account', '12345678912356'),
+              _buildFormDefaultValue('Account',
+                  widget.fromAccount!.accountNumber[0].accountNumber),
               _buildAvailableBalanceText(),
               FormInputValue(
                 title: 'To Account',
@@ -52,20 +73,40 @@ class _TransferScreenState extends State<TransferScreen> {
               FormInputValue(
                 title: 'Choose Amount',
                 controller: amountController,
+                isNumber: true,
               ),
               FormInputValue(
                 title: 'Description',
                 controller: discriptionController,
-                isNumber: true,
               ),
               CustomButton(
                 title: 'Confirm',
-                onPressed: () {
-                  Get.to(
-                    () => TransferConfirmScreen(),
-                    transition: Transition.rightToLeftWithFade,
-                    duration: Duration(milliseconds: 500),
-                  );
+                onPressed: () async {
+                  if (validate()) {
+                    if (!await getRecipient()) {
+                      showErrorDialog(
+                        context,
+                        'The recipient account number is not valid. Please try again',
+                      );
+                      return;
+                    }
+                    Get.to(
+                      () => TransferConfirmScreen(
+                        fromAccount:
+                            widget.fromAccount!.accountNumber[0].accountNumber,
+                        toAccount: accountReceivingController.text,
+                        amount: amountController.text,
+                        description: discriptionController.text,
+                      ),
+                      transition: Transition.rightToLeftWithFade,
+                      duration: Duration(milliseconds: 500),
+                    );
+                  } else {
+                    showErrorDialog(
+                      context,
+                      'The information entered is incorrect. Please try again',
+                    );
+                  }
                 },
               ),
             ],
@@ -136,11 +177,31 @@ class _TransferScreenState extends State<TransferScreen> {
             height: 0.01 * Constants.deviceHeight,
           ),
           Text(
-            formatMoney(1000000),
+            formatMoney(widget.fromAccount!.accountNumber[0].balance),
             style: AppStyles.paragraphSmallBold,
           ),
         ],
       ),
     );
+  }
+
+  bool validate() {
+    if (accountReceivingController.text.isEmpty) {
+      return false;
+    }
+    if (amountController.text.isEmpty) {
+      return false;
+    }
+    if (discriptionController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> getRecipient() async {
+    User? user = await UserService().getByAccountNumber(
+         accountReceivingController.text);
+
+    return user != null;
   }
 }

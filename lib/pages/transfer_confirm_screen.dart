@@ -1,4 +1,8 @@
+import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/transfer_success_screen.dart';
+import 'package:bankingapp/services/account_service.dart';
+import 'package:bankingapp/services/transaction_service.dart';
+import 'package:bankingapp/services/user_service.dart';
 import 'package:bankingapp/widgets/appbar_custom.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
@@ -6,29 +10,38 @@ import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/widgets/button.dart';
 import 'package:bankingapp/widgets/cofirm_alert.dart';
-import 'package:bankingapp/widgets/form_transfer_input.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:intl/intl.dart';
 
 class TransferConfirmScreen extends StatefulWidget {
-  const TransferConfirmScreen({super.key});
+  final String fromAccount;
+  final String toAccount;
+  final String amount;
+  final String description;
+  const TransferConfirmScreen({
+    super.key,
+    required this.toAccount,
+    required this.amount,
+    required this.description,
+    required this.fromAccount,
+  });
 
   @override
   State<TransferConfirmScreen> createState() => _TransferConfirmScreenState();
 }
 
 class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
-  final TextEditingController accountReceivingController =
-      TextEditingController();
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController discriptionController = TextEditingController();
+  late String fromAccountId;
+  User? recipient;
+  @override
+  void initState() {
+    super.initState();
+    getAccountId();
+    getRecipient();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,11 +58,25 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
               CustomAppbar(title: 'Confirm Transfer'),
               _buildImage(),
               SizedBox(height: 0.02 * Constants.deviceHeight),
-              _buildFormDefaultValue('Recipient Name', 'Nguyen Van A'),
-              _buildFormDefaultValue('Recipient Account', '12345678912356'),
-              _buildFormDefaultValue('Phone Number', '0123456789'),
-              _buildFormDefaultValue('Amount', '1,000,000 VND'),
-              _buildFormDefaultValue('Description', 'Nguyen Van A send money'),
+              _buildFormDefaultValue(
+                'Recipient Name',
+                recipient?.fullName == ''
+                    ? 'No information'
+                    : recipient?.fullName ?? 'No information',
+              ),
+              _buildFormDefaultValue(
+                'Recipient Account',
+                widget.toAccount == '' ? 'No information' : widget.toAccount,
+              ),
+              _buildFormDefaultValue(
+                'Phone Number',
+                recipient?.phoneNumber == ''
+                    ? 'No information'
+                    : recipient?.phoneNumber ?? 'No information',
+              ),
+              _buildFormDefaultValue(
+                  'Amount', formatMoney(int.parse(widget.amount))),
+              _buildFormDefaultValue('Description', widget.description),
               SizedBox(height: 0.1 * Constants.deviceHeight),
               CustomButton(
                   title: 'Send',
@@ -58,10 +85,22 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
                       context,
                       'Do you want to confirm this transaction?',
                       'Transfer',
-                      () {
-                        Get.to(
-                          () => TransferSuccessScreen(),
-                        );
+                      () async {
+                        getAccountId();
+                        final body = {
+                          "toAccountNumber": widget.toAccount,
+                          "amount": widget.amount,
+                          "description": widget.description,
+                          "accountId": fromAccountId,
+                        };
+                        final isSuccess =
+                            TransactionService().transferMoney(body);
+
+                        if (await isSuccess) {
+                          Get.to(
+                            () => TransferSuccessScreen(),
+                          );
+                        }
                       },
                       false,
                     );
@@ -109,5 +148,21 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> getAccountId() async {
+    final account =
+        await AccountService().getAccountByNumber(widget.fromAccount);
+    setState(() {
+      fromAccountId = account!.id.toString();
+    });
+  }
+
+  Future<void> getRecipient() async {
+    User? user = await UserService().getByAccountNumber(widget.toAccount);
+
+    setState(() {
+      recipient = user;
+    });
   }
 }

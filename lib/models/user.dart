@@ -26,7 +26,15 @@ class User {
             .map((account) => Account.fromJson(account))
             .toList(),
         address = json['address'] ?? '';
-
+  User.fromJsonAccount(Map<String, dynamic> json)
+      : id = json['id'],
+        fullName = json['fullName'] ?? '',
+        email = json['email'] ?? '',
+        phoneNumber = json['phoneNumber'] ?? '',
+        accountNumber = (json['Accounts'] as List<dynamic>)
+            .map((account) => Account.fromJson(account))
+            .toList(),
+        address = json['address'] ?? '';
   Map<String, dynamic> toJson() => {
         'fullName': fullName,
         'email': email,

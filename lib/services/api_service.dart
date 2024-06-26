@@ -28,7 +28,7 @@ class ApiService {
     }
   }
 
-Future<List<Map<String, dynamic>>?> getList(String path) async {
+  Future<List<Map<String, dynamic>>?> getList(String path) async {
     final token = await getAccessToken();
 
     try {
@@ -45,7 +45,8 @@ Future<List<Map<String, dynamic>>?> getList(String path) async {
         List<dynamic> jsonData = jsonDecode(response.body);
 
         // Convert List<dynamic> to List<Map<String, dynamic>>
-        List<Map<String, dynamic>> dataList = jsonData.cast<Map<String, dynamic>>();
+        List<Map<String, dynamic>> dataList =
+            jsonData.cast<Map<String, dynamic>>();
 
         return dataList;
       } else {
@@ -59,37 +60,37 @@ Future<List<Map<String, dynamic>>?> getList(String path) async {
     }
   }
 
-
   Future<Map<String, dynamic>> post(
       String path, Map<String, dynamic> body) async {
     final token = await getAccessToken(); // Await token retrieval
 
     try {
       final response = await http.post(
-        Uri.parse('$path'),
+        Uri.parse('${apiUrl}${path}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': '$token',
         },
         body: jsonEncode(body),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(utf8.decode(response.bodyBytes));
       } else {
         print('Failed to load data ${response.body}');
         return {};
       }
     } catch (e) {
+      print('Exception in ApiService.post: $e');
       throw Exception('Exception in ApiService.post: $e');
     }
   }
 
-  Future<bool> put(String path, Map<String, dynamic> body) async {
+  Future<bool> update(String path, Map<String, dynamic> body) async {
     final token = await getAccessToken(); // Await token retrieval
 
     try {
-      final response = await http.put(
-        Uri.parse('$path'),
+      final response = await http.patch(
+        Uri.parse('${apiUrl}${path}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': '$token',

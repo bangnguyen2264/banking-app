@@ -8,7 +8,6 @@ import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
-import 'package:bankingapp/utils/mock_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,46 +23,71 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<User?> _futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureUser = UserService().getMe();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _futureUser = UserService().getMe();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder(
-        future: UserService().getMe(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: AppColor.primaryColor_1,
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<User?>(
+          future: _futureUser,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColor.primaryColor_1,
+                ),
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+            final user = snapshot.data;
+            if (user == null) {
+              return Center(
+                child: Text('User not found'),
+              );
+            }
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 0.09 * Constants.deviceWidth,
+                ).copyWith(top: 0.1 * Constants.deviceHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildGoodmorning(user.fullName),
+                    _buildAccountCard(user),
+                    _buildGridMenu(user),
+                  ],
+                ),
               ),
             );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-          final user = snapshot.data;
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 0.09 * Constants.deviceWidth,
-            ).copyWith(top: 0.1 * Constants.deviceHeight),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildGoodmorning(user?.fullName),
-                _buildAccountCard(user!),
-                _buildGridMenu(user),
-              ],
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildGoodmorning(String? name) {
+  Widget _buildGoodmorning(String name) {
     return Container(
       width: 0.7 * Constants.deviceWidth,
       child: Text(
@@ -150,10 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Account \nand Card',
             onTap: () {
               Get.to(
-                  () => AccountScreen(
-                        user: user,
-                      ),
-                  transition: Transition.fadeIn);
+                () => AccountScreen(user: user),
+                transition: Transition.fadeIn,
+              );
               print('Account and Card');
             },
           ),
@@ -161,7 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: 'assets/components/transfer.svg',
             title: 'Transfer',
             onTap: () {
-              Get.to(() => TransferScreen(), transition: Transition.fadeIn);
+              Get.to(
+                () => TransferScreen(
+                  fromAccount: user,
+                ),
+                transition: Transition.fadeIn,
+              );
               print('Transfer');
             },
           ),
@@ -169,8 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: 'assets/components/trans_history.svg',
             title: 'Transaction history',
             onTap: () {
-              Get.to(() => TransferHistoryScreen(),
-                  transition: Transition.fadeIn);
+              Get.to(
+                () => TransferHistoryScreen(),
+                transition: Transition.fadeIn,
+              );
               print('Transaction history');
             },
           ),

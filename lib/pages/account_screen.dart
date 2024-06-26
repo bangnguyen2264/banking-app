@@ -1,16 +1,20 @@
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/card_screen.dart';
+import 'package:bankingapp/services/user_service.dart';
+import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/utils/mock_data.dart';
 import 'package:bankingapp/widgets/appbar_custom.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/widgets/button.dart';
+import 'package:bankingapp/widgets/cofirm_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -58,9 +62,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: CustomButton(
                   title: 'Card',
                   onPressed: () {
-                    Get.to(() => CardScreen(
-                          user: widget.user,
-                        ));
+                    Get.to(() => CardScreen(user: widget.user),
+                        transition: Transition.rightToLeftWithFade);
                   },
                 ),
               ),
@@ -97,7 +100,10 @@ class _AccountScreenState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                isHide ? '****************' : '12345678912356',
+                isHide
+                    ? hideNumberAccount(
+                        widget.user.accountNumber[0].accountNumber)
+                    : widget.user.accountNumber[0].accountNumber,
                 style: AppStyles.heading1.copyWith(color: Colors.white),
               ),
               IconButton(
@@ -116,8 +122,7 @@ class _AccountScreenState extends State<AccountScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildInforCardItem('Card Holder Name', 'George Floyd'),
-              _buildInforCardItem('Expiry date', '02/30'),
+              _buildInforCardItem('Card Holder Name', widget.user.fullName),
               SvgPicture.asset(
                 'assets/components/mastercard.svg',
                 width: 0.06 * Constants.deviceWidth,
@@ -212,7 +217,17 @@ class _AccountScreenState extends State<AccountScreen> {
           _buildFieldUpdateInfor('Phone Number', phoneNumberController),
           _buildFieldUpdateInfor('Email', emailController),
           _buildFieldUpdateInfor('Address', addressController),
-          CustomButton(title: 'Update', onPressed: () {}),
+          CustomButton(
+              title: 'Update',
+              onPressed: () async {
+                showConfirmDialog(
+                  context,
+                  'Do you want to change your information? ',
+                  'Changes',
+                  handleUpdateInfor,
+                  false,
+                );
+              }),
         ],
       ),
     );
@@ -281,5 +296,23 @@ class _AccountScreenState extends State<AccountScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> handleUpdateInfor() async {
+    final response = await UserService().update(widget.user.id, {
+      'fullName': fullNameController.text,
+      'phoneNumber': phoneNumberController.text,
+      'email': emailController.text,
+      'address': addressController.text,
+    });
+    if (response) {
+      Get.snackbar('Success', 'Update information successfully');
+    } else {
+      Get.snackbar('Error', 'Update information failed');
+    }
+    Navigator.pop(context);
+    setState(() {
+      editMode = false;
+    });
   }
 }
