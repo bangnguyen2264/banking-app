@@ -306,6 +306,12 @@ class _AccountScreenState extends State<AccountScreen> {
       'address': addressController.text,
     });
     if (response) {
+      setState(() {
+        widget.user.fullName = fullNameController.text;
+        widget.user.phoneNumber = phoneNumberController.text;
+        widget.user.email = emailController.text;
+        widget.user.address = addressController.text;
+      });
       Get.snackbar('Success', 'Update information successfully');
     } else {
       Get.snackbar('Error', 'Update information failed');

@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/models/accounts.dart';
 import 'package:bankingapp/models/user.dart';
+import 'package:bankingapp/services/account_service.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
@@ -36,7 +38,21 @@ class _CardScreenState extends State<CardScreen> {
                     return _buildCard(widget.user.accountNumber[index]);
                   }),
             ),
-            CustomButton(title: 'Add Card', onPressed: () {}),
+            CustomButton(
+                title: 'Add Card',
+                onPressed: () {
+                  final response = AccountService().createAccount(widget.user.id);
+                  showLoaderDialog(context);
+                  response.then((value) {
+                    Navigator.pop(context);
+                    if (value != null) {
+                      setState(() {
+                        widget.user.accountNumber.add(value);
+                      });
+                    }
+                  });
+
+                }),
             SizedBox(height: 0.025 * Constants.deviceHeight)
           ],
         ),

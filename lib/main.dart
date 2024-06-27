@@ -1,7 +1,5 @@
-import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/pages/onboarding_screen.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

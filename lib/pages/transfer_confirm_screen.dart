@@ -1,3 +1,4 @@
+import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/transfer_success_screen.dart';
 import 'package:bankingapp/services/account_service.dart';
@@ -86,6 +87,7 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
                       'Do you want to confirm this transaction?',
                       'Transfer',
                       () async {
+                        showLoaderDialog(context);
                         getAccountId();
                         final body = {
                           "toAccountNumber": widget.toAccount,
@@ -95,10 +97,11 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
                         };
                         final isSuccess =
                             TransactionService().transferMoney(body);
-
+                        Navigator.pop(context);
                         if (await isSuccess) {
                           Get.to(
                             () => TransferSuccessScreen(),
+                            transition: Transition.native,
                           );
                         }
                       },

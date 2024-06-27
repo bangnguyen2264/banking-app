@@ -24,8 +24,7 @@ class AccountService {
     }
   }
 
-  Future<Account?> getAccountByNumber(
-       String accountNumber) async {
+  Future<Account?> getAccountByNumber(String accountNumber) async {
     final token = await ApiService().getAccessToken();
     try {
       final uri = Uri.parse(
@@ -53,6 +52,40 @@ class AccountService {
     } catch (e) {
       print('Exception in AccountService.getAccountByNumber: $e');
       throw Exception('Failed to fetch account details');
+    }
+  }
+
+  Future<Account?> createAccount(int customerId) async {
+    try {
+      // Generate account number
+      final generateAccountNumberResponse = await ApiService()
+          .get('/customers/$customerId/accounts/generate-account-number');
+
+      if (generateAccountNumberResponse == null ||
+          generateAccountNumberResponse['generatedAccountNumber'] == null) {
+        // Handle error: failed to generate account number
+       throw Exception('Failed to generate account number');
+      }
+
+      final body = {
+        "accountNumber":
+            generateAccountNumberResponse['generatedAccountNumber'],
+      };
+
+      // Create account
+      final accountResponse =
+          await ApiService().post('/customers/$customerId/accounts', body);
+
+      if (accountResponse == null) {
+        // Handle error: failed to create account
+        throw Exception('Failed to create account');
+      }
+
+      return Account.fromJson(accountResponse);
+    } catch (e) {
+      // Handle exception
+      print('Error creating account: $e');
+      throw Exception('Failed to create account in AccountService.creatAccount: $e');
     }
   }
 }
