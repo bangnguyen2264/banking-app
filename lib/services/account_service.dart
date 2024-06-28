@@ -34,9 +34,7 @@ class AccountService {
         ..headers['Content-Type'] = 'application/json'
         ..headers['Authorization'] = '$token'
         ..body = jsonEncode({'accountNumber': accountNumber});
-      print('Request: ${request.url.toString()}');
-      print('Request: ${request.headers.toString()}');
-      print('Request: ${request.body.toString()}');
+
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
@@ -64,7 +62,7 @@ class AccountService {
       if (generateAccountNumberResponse == null ||
           generateAccountNumberResponse['generatedAccountNumber'] == null) {
         // Handle error: failed to generate account number
-       throw Exception('Failed to generate account number');
+        throw Exception('Failed to generate account number');
       }
 
       final body = {
@@ -85,7 +83,8 @@ class AccountService {
     } catch (e) {
       // Handle exception
       print('Error creating account: $e');
-      throw Exception('Failed to create account in AccountService.creatAccount: $e');
+      throw Exception(
+          'Failed to create account in AccountService.creatAccount: $e');
     }
   }
 }

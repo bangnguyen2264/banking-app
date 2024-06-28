@@ -30,6 +30,7 @@ class _TransferScreenState extends State<TransferScreen> {
   final TextEditingController discriptionController = TextEditingController();
   late User? recipient;
   bool isLoading = false;
+  String errorText = '';
   @override
   void initState() {
     super.initState();
@@ -104,7 +105,7 @@ class _TransferScreenState extends State<TransferScreen> {
                   } else {
                     showErrorDialog(
                       context,
-                      'The information entered is incorrect. Please try again',
+                      errorText,
                     );
                   }
                 },
@@ -186,21 +187,53 @@ class _TransferScreenState extends State<TransferScreen> {
   }
 
   bool validate() {
-    if (accountReceivingController.text.isEmpty) {
+    if (accountReceivingController.text.trim().isEmpty) {
+      setState(() {
+        errorText = 'Please enter the recipient account number';
+      });
       return false;
     }
-    if (amountController.text.isEmpty) {
+    if (amountController.text.trim().isEmpty) {
+      setState(() {
+        errorText = 'Please enter the amount';
+      });
+      return false;
+    }
+    if (int.tryParse(amountController.text.trim())! >
+        widget.fromAccount!.accountNumber[0].balance) {
+      setState(() {
+        errorText = 'The amount must be less than the available balance';
+      });
       return false;
     }
     if (discriptionController.text.isEmpty) {
+      setState(() {
+        errorText = 'Please enter the description';
+      });
+      return false;
+    }
+    if (accountReceivingController.text ==
+        widget.fromAccount!.accountNumber[0].accountNumber) {
+      setState(() {
+        errorText = 'You cannot transfer money to yourself';
+      });
       return false;
     }
     return true;
   }
 
   Future<bool> getRecipient() async {
-    User? user = await UserService().getByAccountNumber(
-         accountReceivingController.text);
+    User? user = await UserService()
+        .getByAccountNumber(accountReceivingController.text)
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      showErrorDialog(context, 'Request timeout. Please try again');
+    });
+    if (user == null) {
+      setState(() {
+        errorText =
+            'The recipient account number is not valid. Please try again';
+      });
+    }
 
     return user != null;
   }

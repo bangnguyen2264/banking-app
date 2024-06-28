@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
@@ -26,8 +29,10 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordcontroller =
+      TextEditingController();
   bool confirmTerm = false;
-  bool isLoading = false;
+  String errorText = '';
   @override
   Widget build(BuildContext context) {
     return AuthenLayout(title: 'Sign up', mainContent: _buildMainContent());
@@ -51,40 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
               _buildConfirmTerm(),
               CustomButton(
                 title: 'Sign Up',
-                onPressed: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  showLoaderDialog(context);
-                  print('Sign Up button pressed');
-                  final body = {
-                    'fullName': nameController.text,
-                    'email': emailController.text,
-                    'password': passwordController.text,
-                  };
-                  bool isSuccess =
-                      await AuthService().handleSignUp(body).timeout(
-                    Duration(seconds: 30),
-                    onTimeout: () {
-                      print('Sign Up Timeout');
-                      return false;
-                    },
-                  );
-                  setState(() {
-                    isLoading = false;
-                  });
-                  Navigator.of(context).pop();
-                  if (isSuccess) {
-                    print('Sign Up Success');
-                    Get.to(
-                      () => SigninScreen(),
-                      transition: Transition.rightToLeft,
-                    );
-                  } else {
-                    showErrorDialog(context, 'Sign Up Failed');
-                    print('Sign Up Failed');
-                  }
-                },
+                onPressed: handleSignUp,
               ),
               _buildTextNavigation(),
             ],
@@ -96,7 +68,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildWelcomeText() {
     return Container(
-      margin: EdgeInsets.only(top: 0.03 * Constants.deviceHeight),
+      margin: EdgeInsets.only(top: 0.02 * Constants.deviceHeight),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -116,7 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildLogo() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 0.03 * Constants.deviceHeight),
+      margin: EdgeInsets.symmetric(vertical: 0.02 * Constants.deviceHeight),
       alignment: Alignment.center,
       child: Center(
         child: SvgPicture.asset(
@@ -148,6 +120,12 @@ class _SignupScreenState extends State<SignupScreen> {
           isPassword: true,
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
+        FormAuthen(
+          controller: confirmPasswordcontroller,
+          labelText: 'Confirm Password',
+          isPassword: true,
+        ),
+        SizedBox(height: 0.01 * Constants.deviceHeight),
       ],
     );
   }
@@ -213,5 +191,101 @@ class _SignupScreenState extends State<SignupScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> handleSignUp() async {
+    print('Sign Up button pressed');
+    showLoaderDialog(context);
+    bool isSuccess;
+    isSuccess = checkValidate();
+    print('Validate: $isSuccess');
+    if (!isSuccess) {
+      Navigator.pop(context);
+      showErrorDialog(context, errorText);
+      return;
+    }
+    final body = {
+      'fullName': nameController.text,
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+    isSuccess = await AuthService().handleSignUp(body).timeout(
+      Duration(seconds: 10),
+      onTimeout: () {
+        setState(() {
+          errorText = 'Sign Up Timeout';
+        });
+        print('Sign Up Timeout');
+        return false;
+      },
+    );
+    Navigator.pop(context);
+    if (isSuccess) {
+      print('Sign Up Success');
+      Get.to(
+        () => SigninScreen(),
+        transition: Transition.rightToLeft,
+      );
+    } else {
+      setState(() {
+        errorText = 'Email already exists';
+      });
+      showErrorDialog(context, errorText);
+    }
+  }
+
+  bool checkValidate() {
+    final String name = nameController.text.trim();
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
+    final String confirmPassword = confirmPasswordcontroller.text.trim();
+    print('Check validate');
+    if (name.isEmpty) {
+      setState(() {
+        errorText = 'Full name is required';
+      });
+      return false;
+    }
+
+    if (email.isEmpty) {
+      setState(() {
+        errorText = 'Email is required';
+      });
+      return false;
+    }
+
+    if (password.isEmpty) {
+      setState(() {
+        errorText = 'Password is required';
+      });
+      return false;
+    }
+    if (password.length < 8) {
+      setState(() {
+        errorText = 'Password must be at least 8 characters';
+      });
+      return false;
+    }
+    if (confirmPassword.isEmpty) {
+      setState(() {
+        errorText = 'Confirm password is required';
+      });
+      return false;
+    }
+
+    if (password != confirmPassword) {
+      setState(() {
+        errorText = 'Password and confirm password do not match';
+      });
+      return false;
+    }
+    if (!confirmTerm) {
+      setState(() {
+        errorText = 'Please confirm the terms and conditions';
+      });
+      return false;
+    }
+
+    return true;
   }
 }

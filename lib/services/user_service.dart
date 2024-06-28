@@ -22,10 +22,11 @@ class UserService {
 
   Future<User?> getByAccountNumber( String accountNumber) async {
     final account =
-        await AccountService().getAccountByNumber( accountNumber);
+        await AccountService().getAccountByNumber( accountNumber).onError((error, stackTrace) => null);
     if (account != null) {
       return getById(account.customerId);
     }
+
   }
 
   Future<User?> getMe() async {
