@@ -1,7 +1,7 @@
 import 'package:bankingapp/pages/sign_in_screen.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/appbar_custom.dart';
+import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/widgets/cofirm_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: AppStyles.paragraphMediumBold,
                     ),
                     trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {},
+                    onTap: () {
+                      Get.snackbar('Forgot password',
+                          'This feature is in development, will be available in the next version');
+                    },
                   ),
                   ListTile(
                     title: Text(
@@ -76,6 +79,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('accessToken');
     prefs.remove('refreshToken');
-    Get.to(() => const SigninScreen(), transition: Transition.native);
+    Get.offAll(() => const SigninScreen(), transition: Transition.native);
   }
 }

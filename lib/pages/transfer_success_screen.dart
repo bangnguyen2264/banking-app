@@ -49,7 +49,7 @@ class TransferSuccessScreen extends StatelessWidget {
               child: CustomButton(
                 title: 'Back to Home',
                 onPressed: () {
-                  Get.to(() => NavBar(), transition: Transition.fadeIn);
+                  Get.offAll(() => NavBar(), transition: Transition.fadeIn);
                 },
               ),
             ),

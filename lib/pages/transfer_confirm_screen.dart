@@ -4,7 +4,7 @@ import 'package:bankingapp/pages/transfer_success_screen.dart';
 import 'package:bankingapp/services/account_service.dart';
 import 'package:bankingapp/services/transaction_service.dart';
 import 'package:bankingapp/services/user_service.dart';
-import 'package:bankingapp/widgets/appbar_custom.dart';
+import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';

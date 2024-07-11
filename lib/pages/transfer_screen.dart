@@ -3,7 +3,7 @@ import 'package:bankingapp/models/accounts.dart';
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/services/account_service.dart';
 import 'package:bankingapp/services/user_service.dart';
-import 'package:bankingapp/widgets/appbar_custom.dart';
+import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/pages/transfer_confirm_screen.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
@@ -155,7 +155,7 @@ class _TransferScreenState extends State<TransferScreen> {
               borderRadius: BorderRadius.circular(5),
             ),
             child: Text(
-              value,
+              value,  
               style: AppStyles.paragraphMediumBold,
             ),
           ),

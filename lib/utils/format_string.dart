@@ -11,3 +11,7 @@ String formatMoney(int value) {
   NumberFormat formatter = NumberFormat('#,### VND');
   return formatter.format(value);
 }
+String formatDate(String date) {
+  DateTime dateTime = DateTime.parse(date);
+  return DateFormat('dd/MM/yyyy').format(dateTime);
+}

@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bankingapp/models/accounts.dart';
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/account_screen.dart';
+import 'package:bankingapp/pages/deposit_screen.dart';
 import 'package:bankingapp/pages/transfer_history_screen.dart';
 import 'package:bankingapp/pages/transfer_screen.dart';
 import 'package:bankingapp/services/account_service.dart';
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                     child: Container(
                       width: 0.8 * Constants.deviceWidth,
                       height: 0.3 * Constants.deviceHeight,
@@ -188,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Center(
                         child: CustomButton(
-                          title: 'Creat Account',
+                          title: 'Create Account',
                           onPressed: () {
                             AccountService().createAccount(user.id);
                             _refresh();
@@ -242,10 +243,25 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Transaction history',
             onTap: () {
               Get.to(
-                () => TransferHistoryScreen(),
+                () => TransferHistoryScreen(
+                  accountId: user.accountNumber[0].id,
+                ),
                 transition: Transition.fadeIn,
               );
               print('Transaction history');
+            },
+          ),
+          _buildMenuItem(
+            icon: 'assets/icons/deposit.svg',
+            title: 'Deposit',
+            onTap: () {
+              print('Deposit');
+              Get.to(
+                () => DepositScreen(
+                  accountId: user.accountNumber[0].id,
+                ),
+                transition: Transition.fadeIn,
+              );
             },
           ),
         ],

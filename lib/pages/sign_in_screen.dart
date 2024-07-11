@@ -58,7 +58,7 @@ class _SigninScreenState extends State<SigninScreen> {
               };
 
               bool isSuccess = await AuthService().handleSignIn(body).timeout(
-                Duration(seconds: 30),
+                Duration(seconds: 10),
                 onTimeout: () {
                   print('Sign In Timeout');
                   return false;
@@ -71,7 +71,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
               if (isSuccess) {
                 print('Sign In Success');
-                Get.to(
+                Get.offAll(
                   () => NavBar(),
                   transition: Transition.rightToLeft,
                 );
@@ -143,6 +143,8 @@ class _SigninScreenState extends State<SigninScreen> {
   Widget _buildForgotPassword() {
     return GestureDetector(
       onTap: () {
+        Get.snackbar('Forgot password',
+            'This feature is in development, will be available in the next version');
         print('Forgot password');
       },
       child: Container(

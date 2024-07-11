@@ -8,11 +8,9 @@ import 'package:http/http.dart' as http;
 import 'api_service.dart';
 
 class AccountService {
-  final dio = Dio();
 
   Future<List<Account>> getListAccount(int id) async {
     try {
-      // Assuming ApiService().getList returns a List<dynamic>
       final response = await ApiService().getList('/customers/$id/accounts');
       if (response != null) {
         return response.map((account) => Account.fromJson(account)).toList();

@@ -20,13 +20,13 @@ class UserService {
     }
   }
 
-  Future<User?> getByAccountNumber( String accountNumber) async {
-    final account =
-        await AccountService().getAccountByNumber( accountNumber).onError((error, stackTrace) => null);
+  Future<User?> getByAccountNumber(String accountNumber) async {
+    final account = await AccountService()
+        .getAccountByNumber(accountNumber)
+        .onError((error, stackTrace) => null);
     if (account != null) {
       return getById(account.customerId);
     }
-
   }
 
   Future<User?> getMe() async {
@@ -54,10 +54,6 @@ class UserService {
         'accountNumber':
             accountInfor.map((account) => account.toJson()).toList(),
       };
-
-      // Print the response for debugging purposes
-      print('Response: $response');
-
       // Return the User object
       return User.fromJson(response);
     } catch (e) {

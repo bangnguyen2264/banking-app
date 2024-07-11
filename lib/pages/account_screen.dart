@@ -1,9 +1,10 @@
+import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/pages/card_screen.dart';
 import 'package:bankingapp/services/user_service.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/utils/mock_data.dart';
-import 'package:bankingapp/widgets/appbar_custom.dart';
+import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
@@ -35,6 +36,7 @@ class _AccountScreenState extends State<AccountScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  String? errorText;
   @override
   void initState() {
     fullNameController.text = widget.user.fullName;
@@ -57,16 +59,16 @@ class _AccountScreenState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomAppbar(title: 'Account'),
-              Container(
-                padding: EdgeInsets.only(right: 0.5 * Constants.deviceWidth),
-                child: CustomButton(
-                  title: 'Card',
-                  onPressed: () {
-                    Get.to(() => CardScreen(user: widget.user),
-                        transition: Transition.rightToLeftWithFade);
-                  },
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.only(right: 0.5 * Constants.deviceWidth),
+              //   child: CustomButton(
+              //     title: 'Card',
+              //     onPressed: () {
+              //       Get.to(() => CardScreen(user: widget.user),
+              //           transition: Transition.rightToLeftWithFade);
+              //     },
+              //   ),
+              // ),
               _buildAccountCard(),
               _buildTitleInfor(),
               !editMode ? _buildDetailInfor() : _buildUpdateInfor(),
@@ -220,6 +222,14 @@ class _AccountScreenState extends State<AccountScreen> {
           CustomButton(
               title: 'Update',
               onPressed: () async {
+                bool check = checkValidate();
+                if (!check) {
+                  showErrorDialog(
+                    context,
+                    errorText!,
+                  );
+                  return;
+                }
                 showConfirmDialog(
                   context,
                   'Do you want to change your information? ',
@@ -320,5 +330,32 @@ class _AccountScreenState extends State<AccountScreen> {
     setState(() {
       editMode = false;
     });
+  }
+
+  bool checkValidate() {
+    if (fullNameController.text.trim().isEmpty ||
+        phoneNumberController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        addressController.text.trim().isEmpty) {
+      setState(() {
+        errorText = 'Please fill all fields';
+      });
+      return false;
+    }
+    if (!emailController.text.trim().isEmail) {
+      setState(() {
+        errorText = 'Email is invalid';
+      });
+      return false;
+    }
+    if (phoneNumberController.text.trim().length != 10 ||
+        !phoneNumberController.text.trim().isNumericOnly) {
+      setState(() {
+        errorText = 'Phone number requires 10 digits';
+      });
+      return false;
+    }
+
+    return true;
   }
 }

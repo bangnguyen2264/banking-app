@@ -1,4 +1,5 @@
 import 'package:bankingapp/models/accounts.dart';
+import 'package:bankingapp/models/transactions_report.dart';
 import 'package:bankingapp/models/user.dart';
 
 User mockUser = User(
@@ -28,3 +29,4 @@ User mockUser = User(
   ],
   address: '',
 );
+
