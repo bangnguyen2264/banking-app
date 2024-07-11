@@ -348,8 +348,7 @@ class _AccountScreenState extends State<AccountScreen> {
       });
       return false;
     }
-    if (phoneNumberController.text.trim().length != 10 ||
-        !phoneNumberController.text.trim().isNumericOnly) {
+    if (phoneNumberController.text.trim().length != 10 ) {
       setState(() {
         errorText = 'Phone number requires 10 digits';
       });

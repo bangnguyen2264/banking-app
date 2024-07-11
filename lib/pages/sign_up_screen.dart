@@ -253,6 +253,12 @@ class _SignupScreenState extends State<SignupScreen> {
       });
       return false;
     }
+    if (email.isEmail == false) {
+      setState(() {
+        errorText = 'Email is invalid';
+      });
+      return false;
+    }
 
     if (password.isEmpty) {
       setState(() {
@@ -260,12 +266,7 @@ class _SignupScreenState extends State<SignupScreen> {
       });
       return false;
     }
-    if (password.length < 8) {
-      setState(() {
-        errorText = 'Password must be at least 8 characters';
-      });
-      return false;
-    }
+
     if (confirmPassword.isEmpty) {
       setState(() {
         errorText = 'Confirm password is required';
@@ -282,6 +283,12 @@ class _SignupScreenState extends State<SignupScreen> {
     if (!confirmTerm) {
       setState(() {
         errorText = 'Please confirm the terms and conditions';
+      });
+      return false;
+    }
+    if (password.length < 8) {
+      setState(() {
+        errorText = 'Password must be at least 8 characters';
       });
       return false;
     }
