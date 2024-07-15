@@ -9,8 +9,8 @@ import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
-import 'package:bankingapp/widgets/button.dart';
-import 'package:bankingapp/widgets/cofirm_alert.dart';
+import 'package:bankingapp/components/button.dart';
+import 'package:bankingapp/components/cofirm_alert.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';

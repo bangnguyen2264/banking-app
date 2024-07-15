@@ -30,13 +30,7 @@ class _TransactionHistoryCardState extends State<TransactionHistoryCard> {
         child: Icon(Icons.monetization_on, color: Colors.white),
       ),
       title: Text(
-        widget.transactionReport.transactionType == 'TRANSFER'
-            ? 'Transger to account ${widget.transactionReport.toAccountNumber}'
-            : widget.transactionReport.transactionType == 'DEPOSIT'
-                ? 'Deposited into the account'
-                : widget.transactionReport.transactionType == 'RECEIVE'
-                    ? widget.transactionReport.description
-                    : 'Withdraw from the account',
+        widget.transactionReport.description,
       ),
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

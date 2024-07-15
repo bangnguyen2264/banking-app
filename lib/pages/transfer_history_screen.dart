@@ -4,7 +4,7 @@ import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/utils/mock_data.dart';
-import 'package:bankingapp/widgets/transaction_history_card.dart';
+import 'package:bankingapp/components/transaction_history_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -13,7 +13,7 @@ import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/utils/format_string.dart';
-import 'package:bankingapp/widgets/button.dart';
+import 'package:bankingapp/components/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     _buildGoodmorning(user.fullName),
                     _buildAccountCard(user),
-                    _buildGridMenu(user),
+                    if (user.accountNumber.isNotEmpty) _buildGridMenu(user),
                   ],
                 ),
               ),
@@ -132,70 +132,85 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 0.35 * Constants.deviceWidth,
-                          child: AutoSizeText(
-                            user.fullName,
-                            style: AppStyles.heading1.copyWith(
-                              color: Colors.white,
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            width: 0.35 * Constants.deviceWidth,
+                            child: AutoSizeText(
+                              user.fullName,
+                              style: AppStyles.heading1.copyWith(
+                                color: Colors.white,
+                              ),
+                              maxLines: 2,
                             ),
-                            maxLines: 2,
                           ),
                         ),
-                        SizedBox(height: 0.025 * Constants.deviceHeight),
-                        Container(
-                          width: 0.35 * Constants.deviceWidth,
-                          child: AutoSizeText(
-                            hideNumberAccount(
-                                user.accountNumber[0].accountNumber),
-                            style: AppStyles.paragraphLarge.copyWith(
-                              color: Colors.white,
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            width: 0.35 * Constants.deviceWidth,
+                            child: AutoSizeText(
+                              hideNumberAccount(
+                                  user.accountNumber[0].accountNumber),
+                              style: AppStyles.paragraphLarge.copyWith(
+                                color: Colors.white,
+                              ),
+                              maxLines: 2,
                             ),
-                            maxLines: 2,
                           ),
                         ),
-                        Container(
-                          width: 0.35 * Constants.deviceWidth,
-                          child: AutoSizeText(
-                            formatMoney(user.accountNumber[0].balance),
-                            style: AppStyles.paragraphLargeBold.copyWith(
-                              color: Colors.white,
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            width: 0.35 * Constants.deviceWidth,
+                            child: AutoSizeText(
+                              formatMoney(user.accountNumber[0].balance),
+                              style: AppStyles.paragraphLargeBold.copyWith(
+                                color: Colors.white,
+                              ),
+                              maxLines: 2,
                             ),
-                            maxLines: 2,
                           ),
                         ),
                       ],
                     ),
                   )
-                : BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
                     child: Container(
                       width: 0.8 * Constants.deviceWidth,
                       height: 0.3 * Constants.deviceHeight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.13),
-                          width: 1,
-                        ),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withOpacity(0.15),
-                            Colors.white.withOpacity(0.05),
-                          ],
-                        ),
-                      ),
-                      child: Center(
-                        child: CustomButton(
-                          title: 'Create Account',
-                          onPressed: () {
-                            AccountService().createAccount(user.id);
-                            _refresh();
-                          },
-                          width: 0.35 * Constants.deviceWidth,
-                          height: 0.07 * Constants.deviceHeight,
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                        child: Container(
+                          width: 0.8 * Constants.deviceWidth,
+                          height: 0.3 * Constants.deviceHeight,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.13),
+                              width: 1,
+                            ),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.white.withOpacity(0.15),
+                                Colors.white.withOpacity(0.05),
+                              ],
+                            ),
+                          ),
+                          child: Center(
+                            child: CustomButton(
+                              title: 'Create Account',
+                              onPressed: () {
+                                AccountService().createAccount(user.id);
+                                _refresh();
+                              },
+                              width: 0.35 * Constants.deviceWidth,
+                              height: 0.07 * Constants.deviceHeight,
+                            ),
+                          ),
                         ),
                       ),
                     ),

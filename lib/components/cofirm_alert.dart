@@ -1,7 +1,7 @@
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/button.dart';
+import 'package:bankingapp/components/button.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmAlert extends StatelessWidget {

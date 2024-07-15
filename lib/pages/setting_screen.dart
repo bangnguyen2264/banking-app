@@ -2,7 +2,7 @@ import 'package:bankingapp/pages/sign_in_screen.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/appbar_custom.dart';
-import 'package:bankingapp/widgets/cofirm_alert.dart';
+import 'package:bankingapp/components/cofirm_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -8,8 +8,8 @@ import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/button.dart';
-import 'package:bankingapp/widgets/cofirm_alert.dart';
+import 'package:bankingapp/components/button.dart';
+import 'package:bankingapp/components/cofirm_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -168,18 +168,19 @@ class _AccountScreenState extends State<AccountScreen> {
               color: AppColor.neutral_3,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                editMode = !editMode;
-              });
-            },
-            icon: Icon(
-              Icons.edit,
-              size: 15,
-              color: AppColor.neutral_3,
+          if (!editMode)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  editMode = !editMode;
+                });
+              },
+              icon: Icon(
+                Icons.edit,
+                size: 15,
+                color: AppColor.neutral_3,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -287,7 +288,7 @@ class _AccountScreenState extends State<AccountScreen> {
           Container(
             padding: EdgeInsets.only(
               left: 0.02 * Constants.deviceWidth,
-              bottom: 0.005 * Constants.deviceHeight,
+              bottom: 0.01 * Constants.deviceHeight,
             ),
             width: 0.8 * Constants.deviceWidth,
             height: 0.037 * Constants.deviceHeight,
@@ -310,17 +311,17 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> handleUpdateInfor() async {
     final response = await UserService().update(widget.user.id, {
-      'fullName': fullNameController.text,
-      'phoneNumber': phoneNumberController.text,
-      'email': emailController.text,
-      'address': addressController.text,
+      'fullName': fullNameController.text.trim(),
+      'phoneNumber': phoneNumberController.text.trim(),
+      'email': emailController.text.trim(),
+      'address': addressController.text.trim(),
     });
     if (response) {
       setState(() {
-        widget.user.fullName = fullNameController.text;
-        widget.user.phoneNumber = phoneNumberController.text;
-        widget.user.email = emailController.text;
-        widget.user.address = addressController.text;
+        widget.user.fullName = fullNameController.text.trim();
+        widget.user.phoneNumber = phoneNumberController.text.trim();
+        widget.user.email = emailController.text.trim();
+        widget.user.address = addressController.text.trim();
       });
       Get.snackbar('Success', 'Update information successfully');
     } else {
@@ -348,7 +349,7 @@ class _AccountScreenState extends State<AccountScreen> {
       });
       return false;
     }
-    if (phoneNumberController.text.trim().length != 10 ) {
+    if (phoneNumberController.text.trim().length != 10) {
       setState(() {
         errorText = 'Phone number requires 10 digits';
       });

@@ -1,4 +1,4 @@
-import 'package:bankingapp/widgets/button.dart';
+import 'package:bankingapp/components/button.dart';
 import 'package:flutter/material.dart';
 
 class ErrorAlert extends StatelessWidget {

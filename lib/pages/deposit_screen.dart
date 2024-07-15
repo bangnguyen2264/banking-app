@@ -4,9 +4,9 @@ import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/pages/transfer_success_screen.dart';
 import 'package:bankingapp/services/transaction_service.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/button.dart';
-import 'package:bankingapp/widgets/cofirm_alert.dart';
-import 'package:bankingapp/widgets/form_transfer_input.dart';
+import 'package:bankingapp/components/button.dart';
+import 'package:bankingapp/components/cofirm_alert.dart';
+import 'package:bankingapp/components/form_transfer_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -93,6 +93,8 @@ class _DepositScreenState extends State<DepositScreen> {
     if (response) {
       Get.offAll(() => TransferSuccessScreen(), transition: Transition.fadeIn);
     } else {
+      Navigator.of(context).pop();
+
       showErrorDialog(context, 'Deposit Failed');
     }
   }

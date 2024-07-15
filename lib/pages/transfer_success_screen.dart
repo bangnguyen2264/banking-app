@@ -1,8 +1,8 @@
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
-import 'package:bankingapp/widgets/button.dart';
-import 'package:bankingapp/widgets/nav_bar.dart';
+import 'package:bankingapp/components/button.dart';
+import 'package:bankingapp/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,7 @@ import 'package:get/get_core/src/get_main.dart';
 class TransferSuccessScreen extends StatelessWidget {
   const TransferSuccessScreen({super.key});
 
-  @override
+  @override   
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
