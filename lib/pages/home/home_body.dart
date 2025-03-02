@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bankingapp/pages/account/account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bankingapp/models/user.dart';
 import 'package:bankingapp/utils/const.dart';
@@ -6,6 +7,7 @@ import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/components/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeBody extends StatelessWidget {
@@ -25,7 +27,7 @@ class HomeBody extends StatelessWidget {
         children: [
           _buildGoodmorning(user.fullName),
           _buildAccountCard(user),
-          if (user.accountNumber.isNotEmpty) _buildGridMenu(user),
+          _buildGridMenu(user),
         ],
       ),
     );
@@ -57,7 +59,7 @@ class HomeBody extends StatelessWidget {
             height: 0.3 * Constants.deviceHeight,
             fit: BoxFit.cover,
           ),
-          user.accountNumber.isNotEmpty
+          user.account.accountNumber.isNotEmpty
               ? _buildAccountDetails(user)
               : _buildCreateAccountButton(),
         ],
@@ -71,9 +73,10 @@ class HomeBody extends StatelessWidget {
       height: 0.3 * Constants.deviceHeight,
       padding: EdgeInsets.symmetric(
         horizontal: 0.09 * Constants.deviceWidth,
-        vertical: 0.05 * Constants.deviceHeight,
-      ),
+        vertical: 0.06 * Constants.deviceHeight,
+      ).copyWith(bottom: 0.075 * Constants.deviceHeight),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AutoSizeText(
@@ -82,12 +85,12 @@ class HomeBody extends StatelessWidget {
             maxLines: 2,
           ),
           AutoSizeText(
-            hideNumberAccount(user.accountNumber[0].accountNumber),
+            hideNumberAccount(user.account.accountNumber),
             style: AppStyles.paragraphLarge.copyWith(color: Colors.white),
             maxLines: 2,
           ),
           AutoSizeText(
-            formatMoney(user.accountNumber[0].balance),
+            formatMoney(user.account.balance),
             style: AppStyles.paragraphLargeBold.copyWith(color: Colors.white),
             maxLines: 2,
           ),
@@ -115,10 +118,25 @@ class HomeBody extends StatelessWidget {
       child: GridView.count(
         crossAxisCount: 3,
         children: [
-          _buildMenuItem('assets/components/account_card.svg', 'Account \nand Card', () {}),
-          _buildMenuItem('assets/components/transfer.svg', 'Transfer', () {}),
-          _buildMenuItem('assets/components/trans_history.svg', 'Transaction history', () {}),
-          _buildMenuItem('assets/icons/deposit.svg', 'Deposit', () {}),
+          _buildMenuItem(
+            'assets/components/account_card.svg',
+            'Account \nand Card',
+            () {
+              Get.to(() => AccountScreen());
+            },
+          ),
+          _buildMenuItem(
+            'assets/components/transfer.svg',
+            'Transfer',
+            () {},
+          ),
+          _buildMenuItem('assets/components/trans_history.svg',
+              'Transaction history', () {}),
+          _buildMenuItem(
+            'assets/icons/deposit.svg',
+            'Deposit',
+            () {},
+          ),
         ],
       ),
     );

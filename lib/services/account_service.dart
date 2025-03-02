@@ -6,10 +6,10 @@ import 'package:http/http.dart' as http;
 import 'api_service.dart';
 
 class AccountService {
-
   Future<List<Account>> getListAccount(int id) async {
     try {
-      final response = await ApiService().getList('/customers/$id/accounts');
+      final response =
+          await ApiService().getList(path: '/customers/$id/accounts');
       if (response != null) {
         return response.map((account) => Account.fromJson(account)).toList();
       } else {
@@ -53,7 +53,7 @@ class AccountService {
     try {
       // Generate account number
       final generateAccountNumberResponse = await ApiService()
-          .get('/customers/$customerId/accounts/generate-account-number');
+          .get(path: '/customers/$customerId/accounts/generate-account-number');
 
       if (generateAccountNumberResponse == null ||
           generateAccountNumberResponse['generatedAccountNumber'] == null) {
@@ -67,8 +67,10 @@ class AccountService {
       };
 
       // Create account
-      final accountResponse =
-          await ApiService().post('/customers/$customerId/accounts', body);
+      final accountResponse = await ApiService().post(
+        path: '/customers/$customerId/accounts',
+        body: body,
+      );
 
       if (accountResponse == null) {
         // Handle error: failed to create account

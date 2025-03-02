@@ -4,7 +4,8 @@ import 'package:bankingapp/services/api_service.dart';
 class TransactionService {
   Future<bool> transferMoney(Map<String, dynamic> body) async {
     try {
-      final response = await ApiService().post('/transactions/transfer', body);
+      final response =
+          await ApiService().post(path: '/transactions/transfer', body: body);
       if (response != null) {
         return true;
       } else {
@@ -18,8 +19,8 @@ class TransactionService {
   Future<List<TransactionReport>?> getReport(int accountId) async {
     try {
       print('getReport accountId: $accountId');
-      final response =
-          await ApiService().getList('/transactions/account/$accountId/trans');
+      final response = await ApiService()
+          .getList(path: '/transactions/account/$accountId/trans');
       if (response != null) {
         List<TransactionReport> listFinal = response
             .map((transaction) => TransactionReport.fromJson(transaction))
@@ -36,7 +37,10 @@ class TransactionService {
 
   Future<bool> depositMoney(Map<String, dynamic> body) async {
     try {
-      final response = await ApiService().post('/transactions/deposit', body);
+      final response = await ApiService().post(
+        path: '/transactions/deposit',
+        body: body,
+      );
       if (response.isNotEmpty) {
         return true;
       } else {

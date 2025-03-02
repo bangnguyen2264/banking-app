@@ -1,4 +1,4 @@
-import 'package:bankingapp/pages/auth/sign_in_screen.dart';
+import 'package:bankingapp/pages/sign_in/sign_in_screen.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/appbar_custom.dart';
@@ -77,8 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('accessToken');
-    prefs.remove('refreshToken');
+    prefs.clear();
     Get.offAll(() => const SigninScreen(), transition: Transition.native);
   }
 }

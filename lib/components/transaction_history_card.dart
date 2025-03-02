@@ -36,7 +36,7 @@ class _TransactionHistoryCardState extends State<TransactionHistoryCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            formatMoney(widget.transactionReport.amount),
+            formatMoney(widget.transactionReport.amount as double),
           ),
           Text(formatDate(widget.transactionReport.transactionDate)),
         ],

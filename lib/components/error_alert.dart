@@ -1,5 +1,6 @@
 import 'package:bankingapp/components/button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ErrorAlert extends StatelessWidget {
   final String content;
@@ -16,7 +17,7 @@ class ErrorAlert extends StatelessWidget {
       actions: <Widget>[
         CustomButton(
           title: 'Cancel',
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Get.back(),
         ),
       ],
     );

@@ -3,7 +3,6 @@ import 'package:bankingapp/services/transaction_service.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/appbar_custom.dart';
-import 'package:bankingapp/utils/mock_data.dart';
 import 'package:bankingapp/components/transaction_history_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -71,12 +71,12 @@ class _TransferConfirmScreenState extends State<TransferConfirmScreen> {
               ),
               _buildFormDefaultValue(
                 'Phone Number',
-                recipient?.phoneNumber == ''
+                recipient?.phone == ''
                     ? 'No information'
-                    : recipient?.phoneNumber ?? 'No information',
+                    : recipient?.phone ?? 'No information',
               ),
               _buildFormDefaultValue(
-                  'Amount', formatMoney(int.parse(widget.amount))),
+                  'Amount', formatMoney(int.parse(widget.amount) as double)),
               _buildFormDefaultValue('Description', widget.description),
               SizedBox(height: 0.1 * Constants.deviceHeight),
               CustomButton(

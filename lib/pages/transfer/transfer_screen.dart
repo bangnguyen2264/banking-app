@@ -64,7 +64,7 @@ class _TransferScreenState extends State<TransferScreen> {
               CustomAppbar(title: 'Transfer'),
               _buildImage(),
               _buildFormDefaultValue('Account',
-                  widget.fromAccount!.accountNumber[0].accountNumber),
+                  widget.fromAccount!.account.accountNumber),
               _buildAvailableBalanceText(),
               FormInputValue(
                 title: 'To Account',
@@ -94,7 +94,7 @@ class _TransferScreenState extends State<TransferScreen> {
                     Get.to(
                       () => TransferConfirmScreen(
                         fromAccount:
-                            widget.fromAccount!.accountNumber[0].accountNumber,
+                            widget.fromAccount!.account.accountNumber,
                         toAccount: accountReceivingController.text,
                         amount: amountController.text,
                         description: discriptionController.text,
@@ -178,7 +178,7 @@ class _TransferScreenState extends State<TransferScreen> {
             height: 0.01 * Constants.deviceHeight,
           ),
           Text(
-            formatMoney(widget.fromAccount!.accountNumber[0].balance),
+            formatMoney(widget.fromAccount!.account.balance),
             style: AppStyles.paragraphSmallBold,
           ),
         ],
@@ -200,7 +200,7 @@ class _TransferScreenState extends State<TransferScreen> {
       return false;
     }
     if (int.tryParse(amountController.text.trim())! >
-        widget.fromAccount!.accountNumber[0].balance) {
+        widget.fromAccount!.account.balance) {
       setState(() {
         errorText = 'The amount must be less than the available balance';
       });
@@ -213,7 +213,7 @@ class _TransferScreenState extends State<TransferScreen> {
       return false;
     }
     if (accountReceivingController.text ==
-        widget.fromAccount!.accountNumber[0].accountNumber) {
+        widget.fromAccount!.account.accountNumber) {
       setState(() {
         errorText = 'You cannot transfer money to yourself';
       });

@@ -1,5 +1,7 @@
+import 'package:bankingapp/pages/account/account_viewmodel.dart';
 import 'package:bankingapp/pages/home/home_viewmodel.dart';
 import 'package:bankingapp/pages/onboarding/onboarding_screen.dart';
+import 'package:bankingapp/pages/sign_in/sign_in_viewmodel.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +26,9 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SignInViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewmodel()),
+        ChangeNotifierProvider(create: (_) => AccountViewModel()),
       ],
       child: const GetMaterialApp(
         debugShowCheckedModeBanner: false,

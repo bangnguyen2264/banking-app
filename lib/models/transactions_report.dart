@@ -3,7 +3,7 @@ class TransactionReport {
   final int accountId;
   final String toAccountNumber;
   final String transactionType;
-  final int amount;
+  final double amount;
   final String transactionDate;
   final String description;
   TransactionReport({

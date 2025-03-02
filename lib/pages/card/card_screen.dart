@@ -28,34 +28,16 @@ class _CardScreenState extends State<CardScreen> {
         padding: EdgeInsets.symmetric(
           horizontal: 0.1 * Constants.deviceWidth,
         ),
-        child: Column(
-          children: [
-            CustomAppbar(title: 'Card'),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: widget.user.accountNumber.length,
-                  itemBuilder: (context, index) {
-                    return _buildCard(widget.user.accountNumber[index]);
-                  }),
-            ),
-            CustomButton(
-                title: 'Add Card',
-                onPressed: () {
-                  final response = AccountService().createAccount(widget.user.id);
-                  showLoaderDialog(context);
-                  response.then((value) {
-                    Navigator.pop(context);
-                    if (value != null) {
-                      setState(() {
-                        widget.user.accountNumber.add(value);
-                      });
-                    }
-                  });
-
+        child: Column(children: [
+          CustomAppbar(title: 'Card'),
+          Expanded(
+            child: ListView.builder(
+                itemCount: widget.user.account.accountNumber.length,
+                itemBuilder: (context, index) {
+                  return _buildCard(widget.user.account);
                 }),
-            SizedBox(height: 0.025 * Constants.deviceHeight)
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }

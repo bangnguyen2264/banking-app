@@ -1,10 +1,6 @@
-import 'dart:async';
-
-import 'package:bankingapp/components/error_alert.dart';
-import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
-import 'package:bankingapp/pages/auth/sign_in_screen.dart';
-import 'package:bankingapp/services/auth_service.dart';
+import 'package:bankingapp/pages/sign_in/sign_in_screen.dart';
+import 'package:bankingapp/pages/sign_up/sign_up_viewmodel.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
@@ -13,6 +9,7 @@ import 'package:bankingapp/components/form_authen_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -22,19 +19,22 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordcontroller =
-      TextEditingController();
-  bool confirmTerm = false;
-  String errorText = '';
   @override
   Widget build(BuildContext context) {
-    return AuthenLayout(title: 'Sign up', mainContent: _buildMainContent());
+    return ChangeNotifierProvider(
+      create: (context) => SignUpViewmodel(),
+      child: Consumer<SignUpViewmodel>(
+        builder: (context, viewModel, child) {
+          return AuthenLayout(
+            title: 'Sign up',
+            mainContent: _buildMainContent(viewModel),
+          );
+        },
+      ),
+    );
   }
 
-  Widget _buildMainContent() {
+  Widget _buildMainContent(SignUpViewmodel viewModel) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 0.12 * Constants.deviceWidth,
@@ -48,11 +48,11 @@ class _SignupScreenState extends State<SignupScreen> {
             children: [
               _buildWelcomeText(),
               _buildLogo(),
-              _buildForm(),
-              _buildConfirmTerm(),
+              _buildForm(viewModel),
+              _buildConfirmTerm(viewModel),
               CustomButton(
                 title: 'Sign Up',
-                onPressed: handleSignUp,
+                onPressed: () => viewModel.handleSignUp(),
               ),
               _buildTextNavigation(),
             ],
@@ -97,27 +97,27 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(SignUpViewmodel viewModel) {
     return Column(
       children: [
         FormAuthen(
-          controller: nameController,
+          controller: viewModel.nameController,
           labelText: 'Full Name',
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(
-          controller: emailController,
+          controller: viewModel.emailController,
           labelText: 'Email',
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(
-          controller: passwordController,
+          controller: viewModel.passwordController,
           labelText: 'Password',
           isPassword: true,
         ),
         SizedBox(height: 0.02 * Constants.deviceHeight),
         FormAuthen(
-          controller: confirmPasswordcontroller,
+          controller: viewModel.confirmPasswordController,
           labelText: 'Confirm Password',
           isPassword: true,
         ),
@@ -126,19 +126,15 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildConfirmTerm() {
+  Widget _buildConfirmTerm(SignUpViewmodel viewModel) {
     return Container(
       width: 0.8 * Constants.deviceWidth,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Checkbox(
-            value: confirmTerm,
-            onChanged: (value) {
-              setState(() {
-                confirmTerm = value!;
-              });
-            },
+            value: viewModel.confirmTerm,
+            onChanged: viewModel.setConfirmTerm,
             activeColor: AppColor.primaryColor_1,
           ),
           Expanded(
@@ -187,108 +183,5 @@ class _SignupScreenState extends State<SignupScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> handleSignUp() async {
-    print('Sign Up button pressed');
-    showLoaderDialog(context);
-    bool isSuccess;
-    isSuccess = checkValidate();
-    print('Validate: $isSuccess');
-    if (!isSuccess) {
-      Navigator.pop(context);
-      showErrorDialog(context, errorText);
-      return;
-    }
-    final body = {
-      'fullName': nameController.text,
-      'email': emailController.text,
-      'password': passwordController.text,
-    };
-    isSuccess = await AuthService().handleSignUp(body).timeout(
-      Duration(seconds: 10),
-      onTimeout: () {
-        setState(() {
-          errorText = 'Sign Up Timeout';
-        });
-        print('Sign Up Timeout');
-        return false;
-      },
-    );
-    Navigator.pop(context);
-    if (isSuccess) {
-      print('Sign Up Success');
-      Get.to(
-        () => SigninScreen(),
-        transition: Transition.rightToLeft,
-      );
-    } else {
-      setState(() {
-        errorText = 'Email already exists';
-      });
-      showErrorDialog(context, errorText);
-    }
-  }
-
-  bool checkValidate() {
-    final String name = nameController.text.trim();
-    final String email = emailController.text.trim();
-    final String password = passwordController.text.trim();
-    final String confirmPassword = confirmPasswordcontroller.text.trim();
-    print('Check validate');
-    if (name.isEmpty) {
-      setState(() {
-        errorText = 'Full name is required';
-      });
-      return false;
-    }
-
-    if (email.isEmpty) {
-      setState(() {
-        errorText = 'Email is required';
-      });
-      return false;
-    }
-    if (email.isEmail == false) {
-      setState(() {
-        errorText = 'Email is invalid';
-      });
-      return false;
-    }
-
-    if (password.isEmpty) {
-      setState(() {
-        errorText = 'Password is required';
-      });
-      return false;
-    }
-
-    if (confirmPassword.isEmpty) {
-      setState(() {
-        errorText = 'Confirm password is required';
-      });
-      return false;
-    }
-
-    if (password != confirmPassword) {
-      setState(() {
-        errorText = 'Password and confirm password do not match';
-      });
-      return false;
-    }
-    if (!confirmTerm) {
-      setState(() {
-        errorText = 'Please confirm the terms and conditions';
-      });
-      return false;
-    }
-    if (password.length < 8) {
-      setState(() {
-        errorText = 'Password must be at least 8 characters';
-      });
-      return false;
-    }
-
-    return true;
   }
 }

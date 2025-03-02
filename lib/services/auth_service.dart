@@ -10,15 +10,14 @@ class AuthService {
   Future<bool> handleSignUp(Map<String, dynamic> body) async {
     try {
       final response = await http.post(
-        
         Uri.parse('$apiUrl/auth/register'),
         headers: {
+          'Accept': '*/*',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(body),
-        
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return true;
       } else {
         print('Failed to load data ${response.body}');
@@ -34,18 +33,16 @@ class AuthService {
       final response = await http.post(
         Uri.parse('$apiUrl/auth/login'),
         headers: {
+          'Accept': '*/*',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(body),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String accessToken = 'Bearer ${responseData['accessToken']}';
-        final String refreshToken = 'Bearer ${responseData['refreshToken']}';
+        final String accessToken = 'Bearer ${responseData['token']}';
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('accessToken', accessToken);
-        prefs.setString('refreshToken', refreshToken);
-        
         return true;
       } else {
         print('Failed to load data ${response.body}');

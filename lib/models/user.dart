@@ -3,44 +3,43 @@ import 'package:bankingapp/models/accounts.dart';
 class User {
   int id;
   String fullName;
+  String? dob;
   String email;
-  String phoneNumber;
-  List<Account> accountNumber;
-  String address;
+  String? phone;
+  String? address;
+  Account account;
 
   User({
     required this.id,
     required this.fullName,
+    this.dob,
     required this.email,
-    required this.phoneNumber,
-    required this.accountNumber,
-    required this.address,
+    this.phone,
+    this.address,
+    required this.account,
   });
 
-  User.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        fullName = json['fullName'] ?? '',
-        email = json['email'] ?? '',
-        phoneNumber = json['phoneNumber'] ?? '',
-        accountNumber = (json['accountNumber'] as List<dynamic>)
-            .map((account) => Account.fromJson(account))
-            .toList(),
-        address = json['address'] ?? '';
-  User.fromJsonAccount(Map<String, dynamic> json)
-      : id = json['id'],
-        fullName = json['fullName'] ?? '',
-        email = json['email'] ?? '',
-        phoneNumber = json['phoneNumber'] ?? '',
-        accountNumber = (json['Accounts'] as List<dynamic>)
-            .map((account) => Account.fromJson(account))
-            .toList(),
-        address = json['address'] ?? '';
-  Map<String, dynamic> toJson() => {
-        'fullName': fullName,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'accountNumber':
-            accountNumber.map((account) => account.toJson()).toList(),
-        'address': address,
-      };
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      fullName: json['fullName'],
+      dob: json['dob'],
+      email: json['email'],
+      phone: json['phone'],
+      address: json['address'],
+      account: Account.fromJson(json['account']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'fullName': fullName,
+      'dob': dob,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'account': account.toJson(),
+    };
+  }
 }

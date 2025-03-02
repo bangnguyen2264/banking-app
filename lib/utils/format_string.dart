@@ -7,7 +7,7 @@ String hideNumberAccount(String number) {
   return number;
 }
 
-String formatMoney(int value) {
+String formatMoney(double value) {
   NumberFormat formatter = NumberFormat('#,### VND');
   return formatter.format(value);
 }
