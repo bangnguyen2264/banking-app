@@ -1,6 +1,6 @@
 import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/models/user.dart';
-import 'package:bankingapp/pages/card_screen.dart';
+import 'package:bankingapp/pages/card/card_screen.dart';
 import 'package:bankingapp/services/user_service.dart';
 import 'package:bankingapp/utils/format_string.dart';
 import 'package:bankingapp/utils/mock_data.dart';

@@ -1,7 +1,7 @@
 import 'package:bankingapp/components/appbar_custom.dart';
 import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/components/loader_dialog.dart';
-import 'package:bankingapp/pages/transfer_success_screen.dart';
+import 'package:bankingapp/pages/transfer/transfer_success_screen.dart';
 import 'package:bankingapp/services/transaction_service.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/button.dart';

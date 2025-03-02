@@ -1,4 +1,4 @@
-import 'package:bankingapp/pages/sign_in_screen.dart';
+import 'package:bankingapp/pages/auth/sign_in_screen.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/appbar_custom.dart';

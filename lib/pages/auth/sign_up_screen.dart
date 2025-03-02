@@ -1,20 +1,16 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
-import 'package:bankingapp/pages/sign_in_screen.dart';
-import 'package:bankingapp/pages/sign_up_screen.dart';
+import 'package:bankingapp/pages/auth/sign_in_screen.dart';
 import 'package:bankingapp/services/auth_service.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:bankingapp/components/button.dart';
 import 'package:bankingapp/components/form_authen_input.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 

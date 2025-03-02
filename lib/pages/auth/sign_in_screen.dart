@@ -1,7 +1,7 @@
 import 'package:bankingapp/components/error_alert.dart';
 import 'package:bankingapp/components/loader_dialog.dart';
 import 'package:bankingapp/layouts/authen_layout.dart';
-import 'package:bankingapp/pages/sign_up_screen.dart';
+import 'package:bankingapp/pages/auth/sign_up_screen.dart';
 import 'package:bankingapp/services/auth_service.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';

@@ -1,7 +1,7 @@
-import 'package:bankingapp/pages/home_screen.dart';
-import 'package:bankingapp/pages/messages_screen.dart';
-import 'package:bankingapp/pages/search_screen.dart';
-import 'package:bankingapp/pages/setting_screen.dart';
+import 'package:bankingapp/pages/home/home_screen.dart';
+import 'package:bankingapp/pages/messages/messages_screen.dart';
+import 'package:bankingapp/pages/search/search_screen.dart';
+import 'package:bankingapp/pages/settings/setting_screen.dart';
 import 'package:bankingapp/styles/colors.dart';
 import 'package:bankingapp/styles/text_styles.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,9 +1,11 @@
-import 'package:bankingapp/pages/onboarding_screen.dart';
+import 'package:bankingapp/pages/home/home_viewmodel.dart';
+import 'package:bankingapp/pages/onboarding/onboarding_screen.dart';
 import 'package:bankingapp/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +22,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Constants.initialize(context);
 
-    return const GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomeViewmodel()),
+      ],
+      child: const GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: OnboardingScreen(),
+      ),
     );
   }
 }
