@@ -1,0 +1,42 @@
+  version: '3.8'
+  services:
+    # PostgreSQL Database Service
+    db:
+      image: postgres:13-alpine
+      container_name: bankingapp_db
+      environment:
+        POSTGRES_DB: bankingapp
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+      ports:
+        - "5432:5432"
+      volumes:
+        - db_data:/var/lib/postgresql/data
+      networks:
+        - bankingapp-network
+
+#    # Spring Boot Application Service
+    app:
+      image: henryngyn2264/be-banking-app:latest
+      container_name: bankingapp_app
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bankingapp
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: password
+      ports:
+        - "8081:8081"
+      depends_on:
+        - db
+      networks:
+        - bankingapp-network
+#  # Volume for persistent PostgreSQL storage
+  volumes:
+    db_data:
+
+  # Network for the services
+  networks:
+
+    bankingapp-network:
+      driver: bridge
+
+
