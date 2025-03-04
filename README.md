@@ -1,16 +1,64 @@
-# bankingapp
+🏦 Banking App
 
-A new Flutter project.
+Ứng dụng ngân hàng trực tuyến được xây dựng bằng Spring Boot (Backend) và Flutter (Frontend). Hỗ trợ đăng nhập, quản lý tài khoản, giao dịch và bảo mật bằng JWT.
 
-## Getting Started
+🚀 Tính năng chính
 
-This project is a starting point for a Flutter application.
+🔐 Xác thực và phân quyền người dùng (JWT)
 
-A few resources to get you started if this is your first Flutter project:
+📊 Quản lý tài khoản ngân hàng (Số dư, lịch sử giao dịch)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+💳 Chuyển khoản, gửi tiết kiệm, rút tiền
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+📈 API RESTful với bảo mật cao
+
+📑 Document API với OpenAPI (Swagger)
+
+📱 Ứng dụng Flutter với giao diện thân thiện, hiệu suất cao
+
+🛠 Công nghệ sử dụng
+
+🔙 Backend
+
+Ngôn ngữ: Java, Spring Boot
+
+Bảo mật: Spring Security, JWT
+
+Database: PostgreSQL
+
+Container: Docker, Docker Compose
+
+API Docs: SpringDoc OpenAPI
+
+📱 Frontend
+
+Ngôn ngữ: Dart, Flutter
+
+Quản lý trạng thái: Provider 
+
+Giao tiếp Backend: Http (REST API)
+
+Xác thực:  SharedPreferences, FlutterSecureStorage
+
+📦 Cài đặt và chạy dự án
+1️⃣  Chạy Backend bằng Docker Compose
+
+docker-compose up --build
+
+2️⃣ Cài đặt và chạy Frontend (Flutter)
+CHạy lệnh git: git clone https://github.com/bangnguyen2264/banking-app.git
+
+Yêu cầu:
+
+Flutter SDK (>=3.3.1 <4.0.0)
+
+Android Studio / VS Code (để chạy trên Android)
+
+Xcode (để chạy trên iOS)
+
+Cài đặt dependencies:
+
+cd banking-app
+flutter pub get
+
+Chạy ứng dụng trên thiết bị giả lập hoặc thật:
