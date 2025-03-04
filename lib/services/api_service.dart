@@ -1,21 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bankingapp/utils/app_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String apiUrl = dotenv.env['API_URL'] ?? 'API_URL not found';
+  final AppPreferences _appPreferences = Get.find<AppPreferences>();
+
+  Future<Map<String, String>> _getHeaders() async {
+    final token = await _appPreferences.getFromSecureStorage('accessToken');
+    return {
+      'accept': '*/*',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+  }
 
   Future<Map<String, dynamic>?> get({required String path}) async {
-    final token = await getAccessToken();
     try {
       final response = await http.get(
         Uri.parse('$apiUrl$path'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ?? '',
-        },
+        headers: await _getHeaders(),
       );
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -29,15 +37,10 @@ class ApiService {
   }
 
   Future<List<Map<String, dynamic>>?> getList({required String path}) async {
-    final token = await getAccessToken();
-
     try {
       final response = await http.get(
         Uri.parse('$apiUrl$path'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ?? '',
-        },
+        headers: await _getHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -56,15 +59,10 @@ class ApiService {
     required String path,
     Map<String, dynamic>? body, // body có thể có hoặc không
   }) async {
-    final token = await getAccessToken();
-
     try {
       final response = await http.post(
         Uri.parse('$apiUrl$path'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ?? '',
-        },
+        headers: await _getHeaders(),
         body: body != null ? jsonEncode(body) : null,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -82,15 +80,10 @@ class ApiService {
     required String path,
     Map<String, dynamic>? body,
   }) async {
-    final token = await getAccessToken();
-
     try {
       final response = await http.patch(
         Uri.parse('$apiUrl$path'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ?? '',
-        },
+        headers: await _getHeaders(),
         body: body != null ? jsonEncode(body) : null,
       );
       return response.statusCode == 200;
@@ -100,15 +93,10 @@ class ApiService {
   }
 
   Future<bool> delete({required String path}) async {
-    final token = await getAccessToken();
-
     try {
       final response = await http.delete(
         Uri.parse('$apiUrl$path'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ?? '',
-        },
+        headers: await _getHeaders(),
       );
       return response.statusCode == 200;
     } catch (e) {

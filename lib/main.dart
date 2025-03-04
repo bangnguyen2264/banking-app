@@ -3,6 +3,7 @@ import 'package:bankingapp/pages/home/home_viewmodel.dart';
 import 'package:bankingapp/pages/onboarding/onboarding_screen.dart';
 import 'package:bankingapp/pages/sign_in/sign_in_viewmodel.dart';
 import 'package:bankingapp/utils/const.dart';
+import 'package:bankingapp/utils/di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,7 +13,9 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
   await dotenv.load(fileName: "assets/.env");
+  await initDI();
 
   runApp(const MyApp());
 }

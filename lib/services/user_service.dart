@@ -47,7 +47,11 @@ class UserService {
   }
 
   Future<bool> update(int id, Map<String, dynamic> body) async {
-    final response = await ApiService().update(path: '/customers/$id');
+    final response = await ApiService().update(
+      path: '/user/update/me',
+      body: body,
+    );
+    
     if (response) {
       return true;
     }
